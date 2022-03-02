@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ annotations:
+   prometheus.io/scrape: 'true'
+   prometheus.io/path: '/metrics'
+   prometheus.io/port: '8000'
+ name: cpu-memory-demo
+ namespace: demo
+ labels:
+  team: rood
+  app: cpu-mem
+spec:
+  containers:
+  - name: python-demo
+    image: hypush/python-demo
+  - name: memory-demo-ctr
+    image: polinux/stress
+    resources:
+      limits:
+        memory: "200Mi"
+      requests:
+        memory: "100Mi"
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "150M", "--vm-hang", "1"]
+  - name: cpu-demo-ctr
+    image: vish/stress
+    resources:
+      limits:
+        cpu: "1"
+      requests:
+        cpu: "0.5"
+    args:
+    - -cpus
+    - "2"
+
+
+
